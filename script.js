@@ -34,7 +34,7 @@
      the buttons only toast instead of downloading.
      ======================================================================== */
 
-  const PROD_API = "https://video-hub-api.onrender.com";
+  const PROD_API = "https://video-hub-zwrj.onrender.com";
 
   // Resolved by probeApi() before any download runs. Never read this directly
   // without awaiting apiReady first.
