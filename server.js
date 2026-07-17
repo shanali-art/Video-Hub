@@ -42,9 +42,9 @@ const FFMPEG = process.env.FFMPEG_PATH || "ffmpeg";
 const PLATFORMS = {
   tiktok: { name: "TikTok", hosts: ["tiktok.com"] },
   instagram: { name: "Instagram", hosts: ["instagram.com"] },
-  facebook: { name: "Facebook", hosts: ["facebook.com", "fb.watch", "fb.com"] }
+  facebook: { name: "Facebook", hosts: ["facebook.com", "fb.watch", "fb.com"] },
+  youtube: { name: "YouTube", hosts: ["youtube.com", "youtu.be", "m.youtube.com"] }
 };
-
 /** Returns the platform key for a URL, or null if it isn't one we allow. */
 function classify(raw) {
   let u;
