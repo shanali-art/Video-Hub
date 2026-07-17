@@ -3,9 +3,9 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<meta name="description" content="Video-Hub — Download TikTok, Instagram, Facebook & YouTube videos instantly. Free, fast, no login required." />
+<meta name="description" content="Vid VorTex — Download TikTok, Instagram, Facebook & YouTube videos instantly. Free, fast, no login required." />
 <meta name="theme-color" content="#ffffff" />
-<title>Video-Hub — Download TikTok, Instagram, Facebook & YouTube Videos</title>
+<title>Vid VorTex — Download TikTok, Instagram, Facebook & YouTube Videos</title>
 
 <!-- Inter font -->
 <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -16,7 +16,7 @@
      can't reference the page's gradient defs). %23 is an escaped '#'.
      The orbit arcs are dropped and the disc grown to fill the frame: at 16px
      in a tab, thin arcs are mud — only the disc and play glyph survive. -->
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'><circle cx='24' cy='24' r='22' fill='%23E50914'/><path d='M19.4 15.2 33.6 24 19.4 32.8Z' fill='%23ffffff' stroke='%23ffffff' stroke-width='3' stroke-linejoin='round'/></svg>" />
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'><g fill='%23E50914'><path d='M4,6 L13,6 L21.5,30 L29.5,6 L37.5,6 L21.5,45.5 Z'/><path d='M29.5,6 C42,6 46.5,15 46,24.5 C45.4,35 35.5,42.5 21.5,45.5 C31,39.5 38.5,31.5 39,23.8 C39.4,15.8 36,11 29,11 Z'/><path d='M31.7,19.6 L37.6,24 L31.7,28.4 Z'/></g></svg>" />
 <link rel="stylesheet" href="style.css" />
 </head>
 <body>
@@ -28,13 +28,12 @@
      ever duplicated. -->
 <svg class="svg-defs" aria-hidden="true" focusable="false">
   <defs>
-    <linearGradient id="vhRed" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0" stop-color="#ff5f68" /><stop offset="1" stop-color="#E50914" />
-    </linearGradient>
-    <!-- The logo disc. Lit top-left, deep bottom-right, so the mark reads as a
-         solid object rather than a flat blob. -->
-    <linearGradient id="vhDisc" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0" stop-color="#F6121D" /><stop offset="1" stop-color="#B20710" />
+    <!-- The VD monogram fill. Lit top-left to deep bottom-right so the mark
+         reads as a solid object rather than a flat cut-out. -->
+    <linearGradient id="vhMark" x1="0.1" y1="0" x2="0.9" y2="1">
+      <stop offset="0" stop-color="#FF3B44" />
+      <stop offset="0.55" stop-color="#E50914" />
+      <stop offset="1" stop-color="#A80510" />
     </linearGradient>
 
     <!-- Instagram's glyph gradient, running bottom-left to top-right as the
@@ -54,7 +53,7 @@
 <!-- ============ PAGE LOADER ============ -->
 <div class="page-loader" id="pageLoader">
   <div class="loader-ring"></div>
-  <p class="loader-text">Video-Hub</p>
+  <p class="loader-text">Vid VorTex</p>
 </div>
 
 <!-- ============ ANIMATED CURSOR ============ -->
@@ -76,15 +75,14 @@
   <nav class="nav-inner container" aria-label="Main navigation">
     <a href="#home" class="nav-logo">
       <svg class="logo-mark" viewBox="0 0 48 48" aria-hidden="true" focusable="false">
-        <g class="lm-ring" fill="none" stroke="url(#vhRed)" stroke-width="2.4" stroke-linecap="round">
-          <circle cx="24" cy="24" r="21" stroke-dasharray="26 106" />
-          <circle cx="24" cy="24" r="21" stroke-dasharray="26 106" stroke-dashoffset="-66" />
-        </g>
-        <circle class="lm-disc" cx="24" cy="24" r="16" fill="url(#vhDisc)" />
-        <path class="lm-play" d="M20.8 17.4 31.2 24 20.8 30.6Z" fill="#ffffff"
-              stroke="#ffffff" stroke-width="2.2" stroke-linejoin="round" />
+        <!-- VD monogram: the V doubles as the D's stem, and the play glyph sits in
+             the D's counter. Hand-built flat SVG rather than the 3D artwork:
+             it stays crisp at 30px in the navbar and recolours from tokens. -->
+        <path class="lm-v" fill="url(#vhMark)" d="M4,6 L13,6 L21.5,30 L29.5,6 L37.5,6 L21.5,45.5 Z" />
+        <path class="lm-d" fill="url(#vhMark)" d="M29.5,6 C42,6 46.5,15 46,24.5 C45.4,35 35.5,42.5 21.5,45.5 C31,39.5 38.5,31.5 39,23.8 C39.4,15.8 36,11 29,11 Z" />
+        <path class="lm-play" fill="url(#vhMark)" d="M31.7,19.6 L37.6,24 L31.7,28.4 Z" />
       </svg>
-      <span class="nav-logo-text">Video-Hub</span>
+      <span class="nav-logo-text">Vid VorTex</span>
     </a>
 
     <ul class="nav-menu" id="navMenu">
@@ -99,7 +97,6 @@
       <span></span><span></span><span></span>
     </button>
   </nav>
-  <div class="nav-progress" id="navProgress"></div>
 </header>
 
 <main>
@@ -153,16 +150,24 @@
 
     <h1 class="hero-title reveal" data-reveal="up">
       <svg class="logo-mark hero-logo-mark" viewBox="0 0 48 48" aria-hidden="true" focusable="false">
-        <g class="lm-ring" fill="none" stroke="url(#vhRed)" stroke-width="2.4" stroke-linecap="round">
-          <circle cx="24" cy="24" r="21" stroke-dasharray="26 106" />
-          <circle cx="24" cy="24" r="21" stroke-dasharray="26 106" stroke-dashoffset="-66" />
-        </g>
-        <circle class="lm-disc" cx="24" cy="24" r="16" fill="url(#vhDisc)" />
-        <path class="lm-play" d="M20.8 17.4 31.2 24 20.8 30.6Z" fill="#ffffff"
-              stroke="#ffffff" stroke-width="2.2" stroke-linejoin="round" />
+        <!-- VD monogram: the V doubles as the D's stem, and the play glyph sits in
+             the D's counter. Hand-built flat SVG rather than the 3D artwork:
+             it stays crisp at 30px in the navbar and recolours from tokens. -->
+        <path class="lm-v" fill="url(#vhMark)" d="M4,6 L13,6 L21.5,30 L29.5,6 L37.5,6 L21.5,45.5 Z" />
+        <path class="lm-d" fill="url(#vhMark)" d="M29.5,6 C42,6 46.5,15 46,24.5 C45.4,35 35.5,42.5 21.5,45.5 C31,39.5 38.5,31.5 39,23.8 C39.4,15.8 36,11 29,11 Z" />
+        <path class="lm-play" fill="url(#vhMark)" d="M31.7,19.6 L37.6,24 L31.7,28.4 Z" />
       </svg>
-      <span class="hero-wordmark">Video-Hub</span>
+      <!-- Two-tone lockup. "VorTex" is dark ink, not the reference's white:
+           that artwork sits on black, and white type on this white page would
+           be an invisible hole. Same contrast relationship, inverted ground. -->
+      <span class="hero-wordmark">
+        <span class="wm-vid">Vid</span> <span class="wm-vortex">VorTe<span class="wm-x">x</span></span>
+      </span>
     </h1>
+
+    <p class="hero-tagline reveal" data-reveal="fade" data-delay="80">
+      Fast<i>.</i> Simple<i>.</i> Video<i>.</i>
+    </p>
 
     <p class="hero-subtitle reveal" data-reveal="up" data-delay="100">
       Download <span class="type-target" id="typeTarget"></span><span class="type-caret"></span> videos instantly.
@@ -418,7 +423,7 @@
 <section class="section" id="features">
   <div class="container">
     <header class="section-head reveal" data-reveal="up">
-      <span class="eyebrow">Why Video-Hub</span>
+      <span class="eyebrow">Why Vid VorTex</span>
       <h2 class="section-title">Everything you need, <span class="gradient-text">nothing you don't</span></h2>
       <p class="section-sub">Fast, free and friendly on every device you own.</p>
     </header>
@@ -578,7 +583,7 @@
 
       <div class="faq-item glass reveal" data-reveal="up" data-delay="180">
         <button class="faq-q" aria-expanded="false">
-          <span>Is Video-Hub free?</span>
+          <span>Is Vid VorTex free?</span>
           <span class="faq-icon" aria-hidden="true"></span>
         </button>
         <div class="faq-a"><div class="faq-a-inner">
@@ -635,15 +640,14 @@
     <div class="footer-brand">
       <a href="#home" class="nav-logo">
         <svg class="logo-mark" viewBox="0 0 48 48" aria-hidden="true" focusable="false">
-          <g class="lm-ring" fill="none" stroke="url(#vhRed)" stroke-width="2.4" stroke-linecap="round">
-          <circle cx="24" cy="24" r="21" stroke-dasharray="26 106" />
-          <circle cx="24" cy="24" r="21" stroke-dasharray="26 106" stroke-dashoffset="-66" />
-        </g>
-        <circle class="lm-disc" cx="24" cy="24" r="16" fill="url(#vhDisc)" />
-        <path class="lm-play" d="M20.8 17.4 31.2 24 20.8 30.6Z" fill="#ffffff"
-              stroke="#ffffff" stroke-width="2.2" stroke-linejoin="round" />
+          <!-- VD monogram: the V doubles as the D's stem, and the play glyph sits in
+             the D's counter. Hand-built flat SVG rather than the 3D artwork:
+             it stays crisp at 30px in the navbar and recolours from tokens. -->
+        <path class="lm-v" fill="url(#vhMark)" d="M4,6 L13,6 L21.5,30 L29.5,6 L37.5,6 L21.5,45.5 Z" />
+        <path class="lm-d" fill="url(#vhMark)" d="M29.5,6 C42,6 46.5,15 46,24.5 C45.4,35 35.5,42.5 21.5,45.5 C31,39.5 38.5,31.5 39,23.8 C39.4,15.8 36,11 29,11 Z" />
+        <path class="lm-play" fill="url(#vhMark)" d="M31.7,19.6 L37.6,24 L31.7,28.4 Z" />
         </svg>
-        <span class="nav-logo-text">Video-Hub</span>
+        <span class="nav-logo-text">Vid VorTex</span>
       </a>
       <p class="footer-tagline">Download TikTok, Instagram, Facebook &amp; YouTube videos instantly. Free forever, no login required.</p>
     </div>
@@ -655,7 +659,7 @@
       <a href="https://github.com" target="_blank" rel="noopener noreferrer">GitHub</a>
     </nav>
   </div>
-  <p class="copyright">© <span id="year">2026</span> Video-Hub. Built with HTML, CSS &amp; vanilla JavaScript.</p>
+  <p class="copyright">© <span id="year">2026</span> Vid VorTex. Built with HTML, CSS &amp; vanilla JavaScript.</p>
 </footer>
 
 <!-- ============ TOAST / WARNING ============ -->

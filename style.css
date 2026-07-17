@@ -1,5 +1,5 @@
 /* ==========================================================================
-   VIDEO-HUB — style.css
+   VID VORTEX — style.css
    Premium video downloader UI. Vanilla CSS3, no frameworks.
 
    Contents
@@ -69,9 +69,11 @@
   --sh-glow-red-deep: 0 0 32px rgba(178, 7, 16, 0.25);
   --sh-glow-red-glow: 0 0 32px rgba(246, 18, 29, 0.25);
 
-  /* Neumorphic pair (used on chips / small controls) — inverted: the shadow is
-     now the soft one and the highlight is white. */
-  --neu: 6px 6px 16px rgba(0, 0, 0, 0.08), -6px -6px 16px rgba(255, 255, 255, 0.9);
+  /* Was a neumorphic pair — an offset dark shadow plus a white highlight. That
+     look needs a mid-grey ground to push against; on white the highlight is
+     invisible and the offset shadow just smears the red bloom behind it into a
+     dirty pink halo. One soft, centred shadow instead. */
+  --neu: 0 2px 10px rgba(0, 0, 0, 0.06);
 
   /* Motion */
   --ease: cubic-bezier(0.22, 1, 0.36, 1);
@@ -80,10 +82,18 @@
   --t: 0.4s;
   --t-slow: 0.75s;
 
-  /* Layout — corners are nearly square here; the old theme was pill-soft. */
+  /* Layout.
+
+     A four-step radius scale. The stylesheet previously held ELEVEN different
+     hardcoded radii (2/8/9/10/12/14/16/18/20/22/99px) with nothing relating
+     them — a 6px field beside an 18px card beside a 20px icon. That mismatch,
+     more than any single value, is what made the page read as unresolved.
+     Each step is roughly 1.6x the last, so they look related at a glance. */
   --maxw: 1200px;
-  --radius: 6px;
-  --radius-sm: 4px;
+  --radius-sm: 6px;    /* small glyph plates: icons, tags */
+  --radius: 10px;      /* controls: fields, buttons, list cells */
+  --radius-lg: 16px;   /* surfaces: cards, panels, big icon tiles */
+  --radius-pill: 999px;/* chips, badges, eyebrows */
   --nav-h: 74px;
 }
 
@@ -128,7 +138,7 @@ ul { list-style: none; }
 ::-webkit-scrollbar-track { background: #f0f0f0; }
 ::-webkit-scrollbar-thumb {
   background: linear-gradient(180deg, var(--red), var(--red-deep));
-  border-radius: 99px;
+  border-radius: var(--radius-pill);
   border: 3px solid var(--bg);
 }
 ::-webkit-scrollbar-thumb:hover { background: linear-gradient(180deg, var(--red-deep), var(--red-glow)); }
@@ -137,7 +147,7 @@ html { scrollbar-color: var(--red) #f0f0f0; scrollbar-width: thin; }
 :focus-visible {
   outline: 2px solid var(--red-glow);
   outline-offset: 3px;
-  border-radius: 6px;
+  border-radius: var(--radius-sm);
 }
 
 /* Visible to screen readers, invisible on screen. Used by the icon-only chips.
@@ -182,7 +192,7 @@ html { scrollbar-color: var(--red) #f0f0f0; scrollbar-width: thin; }
   padding: 0.35rem 0.95rem;
   margin-bottom: 1rem;
   border: 1px solid var(--glass-brd);
-  border-radius: 99px;
+  border-radius: var(--radius-pill);
   background: var(--glass-bg);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
@@ -221,40 +231,41 @@ html { scrollbar-color: var(--red) #f0f0f0; scrollbar-width: thin; }
   50% { background-position: 100% 50%; }
 }
 
-/* ---- Hero wordmark: a white glint travelling across the red ----
+/* ---- Wordmark lockup ----
+   Italic + tight tracking, matching the brand artwork. The reference splits
+   the name across two colours and lands the final letter back on the accent;
+   on a white page the white half becomes ink, or it disappears. */
+.wm-vid    { color: var(--red); }
+.wm-vortex { color: var(--ink); }
+.wm-x      { color: var(--red); }
 
-   Its own class rather than .gradient-text: that class brings its own gradient
-   plus the gradShift loop, which would fight this one.
-
-   Band width is the whole trick, and it's why the first attempt failed. At
-   background-size: 300% the gradient is three times the word's width, so a
-   stop range is magnified 3x on screen: the old 42%–58% became a ramp roughly
-   half the word wide, which on a white page read as the word washing out to
-   pink rather than catching a highlight. 47%–53% is a ramp about 18% of the
-   word, with pure white only at its centre — a glint, not a wash.
-
-   No -webkit-text-stroke either: it was there to stop the white punching a
-   hole through the letters, which a band this narrow doesn't do, and at 900
-   weight it just made the edges furry. */
 .hero-wordmark {
-  background: linear-gradient(100deg,
-    var(--red) 0%,
-    var(--red) 47%,
-    #ffffff 50%,
-    var(--red) 53%,
-    var(--red) 100%);
-  background-size: 300% 100%;
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  animation: wordmarkGlint 4.5s var(--ease) infinite;
+  font-style: italic;
+  letter-spacing: -0.045em;
 }
 
-/* Across and back, so the cycle has no jump-cut on restart. */
-@keyframes wordmarkGlint {
-  0%, 100% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
+/* Tagline. The <i> elements are the separators — red, and the only thing
+   carrying the accent down here. */
+.hero-tagline {
+  margin-top: 0.5rem;
+  text-align: center;
+  text-transform: uppercase;
+  font-size: clamp(0.62rem, 1.5vw, 0.76rem);
+  font-weight: 700;
+  font-style: italic;
+  letter-spacing: 0.34em;
+  /* letter-spacing adds a trailing gap after the last glyph, which throws a
+     centred line off-centre by half of it. Pull it back. */
+  text-indent: 0.34em;
+  color: var(--ink-dim);
 }
+.hero-tagline i { color: var(--red); font-style: inherit; }
+
+/* The travelling-glint treatment that used to live here is gone. It worked by
+   clipping a gradient to the text with color:transparent — which the two-tone
+   spans above cannot coexist with, because their own opaque `color` paints
+   straight over the clipped gradient. The brand lockup is two-tone and static;
+   the motion in the hero is the vortex mark. */
 
 /* Shimmer sweep across the logo text */
 
@@ -477,18 +488,21 @@ html { scrollbar-color: var(--red) #f0f0f0; scrollbar-width: thin; }
   filter: drop-shadow(0 2px 9px rgba(229, 9, 20, 0.5));
   transition: filter var(--t) var(--ease);
 }
-.lm-ring,
+.lm-v,
+.lm-d,
 .lm-play {
   /* Without transform-box the origin resolves against the border box, not the
-     viewBox, and the mark rotates around its corner. */
+     viewBox, and a scaled part drifts off the mark's centre. */
   transform-box: view-box;
   transform-origin: 50% 50%;
 }
-.lm-ring { transition: transform 0.8s var(--ease); }
 .lm-play { transition: transform 0.45s var(--ease-bounce); }
+.lm-d { transition: transform 0.5s var(--ease); }
 
-.nav-logo:hover .lm-ring { transform: rotate(180deg); }
-.nav-logo:hover .lm-play { transform: scale(1.22); }
+/* Hover nudges the play glyph and eases the D outward — the monogram is a
+   solid mark now, so it flexes rather than spins. */
+.nav-logo:hover .lm-play { transform: scale(1.18); }
+.nav-logo:hover .lm-d { transform: scale(1.04); }
 .nav-logo:hover .logo-mark { filter: drop-shadow(0 3px 16px rgba(178, 7, 16, 0.75)); }
 
 .nav-logo-text {
@@ -508,7 +522,7 @@ html { scrollbar-color: var(--red) #f0f0f0; scrollbar-width: thin; }
   position: relative;
   display: inline-block;
   padding: 0.5rem 0.9rem;
-  border-radius: 10px;
+  border-radius: var(--radius);
   color: var(--ink-dim);
   font-size: 0.9rem;
   font-weight: 500;
@@ -532,21 +546,13 @@ html { scrollbar-color: var(--red) #f0f0f0; scrollbar-width: thin; }
 .nav-link.active { color: var(--ink); }
 
 /* Scroll progress bar under the nav */
-.nav-progress {
-  height: 2px;
-  width: 0%;
-  background: linear-gradient(90deg, var(--red), var(--red-deep), var(--red-glow));
-  box-shadow: 0 0 12px rgba(178, 7, 16, 0.6);
-  transition: width 0.1s linear;
-}
-
 /* Burger */
 .nav-toggle {
   display: none;
   flex-direction: column;
   gap: 5px;
   padding: 10px;
-  border-radius: 10px;
+  border-radius: var(--radius);
   border: 1px solid var(--glass-brd);
   background: var(--glass-bg);
 }
@@ -580,7 +586,7 @@ html { scrollbar-color: var(--red) #f0f0f0; scrollbar-width: thin; }
   padding: 0.42rem 1.05rem;
   margin-bottom: 1.5rem;
   border: 1px solid var(--glass-brd);
-  border-radius: 99px;
+  border-radius: var(--radius-pill);
   background: var(--glass-bg);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
@@ -622,14 +628,15 @@ html { scrollbar-color: var(--red) #f0f0f0; scrollbar-width: thin; }
   filter: drop-shadow(0 12px 30px rgba(229, 9, 20, 0.55));
   animation: heroIconFloat 4.5s ease-in-out infinite;
 }
-.hero-logo-mark .lm-ring { animation: ringSpin 22s linear infinite; }
+/* The mark is a solid monogram now, not a ring of arcs — there's nothing to
+   spin, so the hero copy just breathes on the play glyph while the whole mark
+   floats. The old per-arc vortex rotations went with the arcs. */
 .hero-logo-mark .lm-play { animation: playPulse 4.5s ease-in-out infinite; }
 
 @keyframes heroIconFloat {
   0%, 100% { transform: translateY(0); }
   50% { transform: translateY(-14px); }
 }
-@keyframes ringSpin { to { transform: rotate(360deg); } }
 @keyframes playPulse {
   0%, 100% { transform: scale(1); }
   50% { transform: scale(1.08); }
@@ -675,7 +682,7 @@ html { scrollbar-color: var(--red) #f0f0f0; scrollbar-width: thin; }
   place-items: center;
   width: clamp(48px, 6vw, 74px);
   aspect-ratio: 1;
-  border-radius: 20px;
+  border-radius: var(--radius-lg);
   border: 1px solid var(--glass-brd);
   background: var(--glass-bg);
   backdrop-filter: blur(12px);
@@ -766,7 +773,7 @@ html { scrollbar-color: var(--red) #f0f0f0; scrollbar-width: thin; }
   display: block;
   width: 24px; height: 38px;
   border: 2px solid var(--ink-dim);
-  border-radius: 14px;
+  border-radius: var(--radius);
   position: relative;
 }
 .wheel {
@@ -1117,7 +1124,7 @@ html { scrollbar-color: var(--red) #f0f0f0; scrollbar-width: thin; }
   align-items: center;
   gap: 0.5rem;
   padding: 0.4rem 0.95rem;
-  border-radius: 99px;
+  border-radius: var(--radius-pill);
   border: 1px solid var(--glass-brd);
   background: var(--glass-bg);
   font-size: 0.82rem;
@@ -1231,7 +1238,7 @@ html { scrollbar-color: var(--red) #f0f0f0; scrollbar-width: thin; }
 .preview-badge {
   position: absolute;
   padding: 0.18rem 0.55rem;
-  border-radius: 7px;
+  border-radius: var(--radius-sm);
   font-size: 0.7rem;
   font-weight: 600;
   backdrop-filter: blur(6px);
@@ -1270,7 +1277,7 @@ html { scrollbar-color: var(--red) #f0f0f0; scrollbar-width: thin; }
 }
 .result-meta li {
   padding: 0.6rem 0.75rem;
-  border-radius: 12px;
+  border-radius: var(--radius);
   border: 1px solid var(--glass-brd);
   background: rgba(0, 0, 0, 0.03);
   display: flex;
@@ -1303,7 +1310,7 @@ html { scrollbar-color: var(--red) #f0f0f0; scrollbar-width: thin; }
   column-gap: 0.7rem;
   align-items: center;
   padding: 0.85rem 1rem;
-  border-radius: 14px;
+  border-radius: var(--radius);
   border: 1px solid var(--glass-brd);
   background: rgba(0, 0, 0, 0.03);
   overflow: hidden;
@@ -1329,16 +1336,79 @@ html { scrollbar-color: var(--red) #f0f0f0; scrollbar-width: thin; }
    08. HOW IT WORKS
    ========================================================================== */
 
-.steps-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-  gap: clamp(1.2rem, 2.5vw, 1.8rem);
+/* ==========================================================================
+   CARD RAILS — shared by How It Works, Platforms, Features and Devices.
+
+   All four were `grid: repeat(auto-fit, minmax(Npx, 1fr))`, which stacks into
+   a long column on a phone. They're now one horizontal scroll-snap rail each.
+
+   The negative margin + matching padding is the trick: it lets the rail bleed
+   out to the container's gutter, so a card runs off the screen edge instead of
+   stopping neatly short. That overhang IS the affordance — a row ending flush
+   at the edge looks like a finished layout, not something you can swipe.
+
+   `flex: 1 0 var(--rail-card)` gives both behaviours from one rule. Where the
+   cards overflow (phones, or any section with a lot of them) they can't grow,
+   so the rail scrolls. Where they fit inside --maxw, flex-grow takes over and
+   they fill the row with nothing to scroll — so wide screens keep the old
+   layout. Each section sets its own --rail-card below.
+   ========================================================================== */
+
+.steps-grid,
+.platform-grid,
+.feature-grid,
+.device-grid {
+  display: flex;
+  align-items: stretch;
+  gap: clamp(0.9rem, 2.5vw, 1.8rem);
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory;
+  /* overflow-x:auto clips the OTHER axis too, which would shave the cards'
+     hover shadow and 3D tilt off at the top and bottom. So the rail is padded
+     to give them room, and the padding is cancelled again with a matching
+     negative margin so section spacing is unchanged.
+     Inline: -1.25rem == half the .container gutter, giving the edge bleed. */
+  margin: -1rem -1.25rem -1.5rem;
+  padding: 1rem 1.25rem 1.5rem;
+  scrollbar-width: none;            /* the overhang says "scroll", not a bar */
+  -ms-overflow-style: none;
+}
+.steps-grid::-webkit-scrollbar,
+.platform-grid::-webkit-scrollbar,
+.feature-grid::-webkit-scrollbar,
+.device-grid::-webkit-scrollbar { display: none; }
+
+/* Card width per section: roughly its old minmax() floor, with a vw-based
+   basis so one card plus a slice of the next fills a phone. */
+.steps-grid    { --rail-card: clamp(230px, 74vw, 320px); }
+.platform-grid { --rail-card: clamp(240px, 76vw, 300px); }
+.feature-grid  { --rail-card: clamp(200px, 62vw, 250px); }
+.device-grid   { --rail-card: clamp(190px, 64vw, 240px); }
+
+.step-card,
+.platform-card,
+.feature-card,
+.device-card {
+  flex: 1 0 var(--rail-card);
+  scroll-snap-align: start;
+}
+
+/* Headings sit left over their rail. FAQ and the CTA aren't rails and stay
+   centred, so this is a list rather than a change to .section-head itself. */
+#how .section-head,
+#platforms .section-head,
+#features .section-head,
+#devices .section-head {
+  text-align: left;
+  max-width: none;
+  margin-inline: 0;
 }
 
 .step-card {
   position: relative;
   padding: 2rem 1.6rem;
-  text-align: center;
+  text-align: left;
   transform-style: preserve-3d;
   transition: transform var(--t) var(--ease), box-shadow var(--t) var(--ease),
               border-color var(--t-fast);
@@ -1361,8 +1431,9 @@ html { scrollbar-color: var(--red) #f0f0f0; scrollbar-width: thin; }
   display: grid;
   place-items: center;
   width: 68px; height: 68px;
-  margin: 0 auto 1.2rem;
-  border-radius: 20px;
+  /* Was `0 auto` — centred, which fought the card's left alignment. */
+  margin: 0 0 1.2rem;
+  border-radius: var(--radius-lg);
   border: 1px solid var(--glass-brd);
   transition: transform var(--t) var(--ease-bounce), box-shadow var(--t);
   animation: floatSoft 5s ease-in-out infinite;
@@ -1418,16 +1489,14 @@ html { scrollbar-color: var(--red) #f0f0f0; scrollbar-width: thin; }
    09. PLATFORMS
    ========================================================================== */
 
-.platform-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
-  gap: clamp(1.2rem, 2.5vw, 1.8rem);
-}
+/* Layout lives in the shared rail rule near the top — this section only sets
+   its --rail-card there. A `display: grid` here would win on source order and
+   silently undo the rail. */
 
 .platform-card {
   position: relative;
   padding: 2.2rem 1.7rem;
-  text-align: center;
+  text-align: left;
   overflow: hidden;
   transform-style: preserve-3d;
   transition: transform var(--t) var(--ease), box-shadow var(--t) var(--ease);
@@ -1465,8 +1534,8 @@ html { scrollbar-color: var(--red) #f0f0f0; scrollbar-width: thin; }
   display: grid;
   place-items: center;
   width: 76px; height: 76px;
-  margin: 0 auto 1.3rem;
-  border-radius: 22px;
+  margin: 0 0 1.3rem;
+  border-radius: var(--radius-lg);
   border: 1px solid var(--glass-brd);
   color: var(--accent);
   background: color-mix(in srgb, var(--accent) 14%, transparent);
@@ -1494,7 +1563,7 @@ html { scrollbar-color: var(--red) #f0f0f0; scrollbar-width: thin; }
 }
 .platform-tags li {
   padding: 0.22rem 0.7rem;
-  border-radius: 99px;
+  border-radius: var(--radius-pill);
   border: 1px solid var(--glass-brd);
   background: rgba(0, 0, 0, 0.03);
   font-size: 0.71rem;
@@ -1508,16 +1577,12 @@ html { scrollbar-color: var(--red) #f0f0f0; scrollbar-width: thin; }
    10. FEATURES
    ========================================================================== */
 
-.feature-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
-  gap: clamp(0.9rem, 2vw, 1.3rem);
-}
+/* Layout: see the shared rail rule near the top. */
 
 .feature-card {
   position: relative;
   padding: 1.6rem 1.35rem;
-  border-radius: 18px;
+  border-radius: var(--radius-lg);
   overflow: hidden;
   transition: transform var(--t) var(--ease-bounce), box-shadow var(--t) var(--ease),
               border-color var(--t-fast);
@@ -1542,7 +1607,7 @@ html { scrollbar-color: var(--red) #f0f0f0; scrollbar-width: thin; }
   place-items: center;
   width: 48px; height: 48px;
   margin-bottom: 1rem;
-  border-radius: 14px;
+  border-radius: var(--radius);
   border: 1px solid var(--glass-brd);
   transition: transform var(--t) var(--ease-bounce), box-shadow var(--t);
 }
@@ -1563,15 +1628,11 @@ html { scrollbar-color: var(--red) #f0f0f0; scrollbar-width: thin; }
    11. DEVICES
    ========================================================================== */
 
-.device-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: clamp(1rem, 2vw, 1.5rem);
-}
+/* Layout: see the shared rail rule near the top. */
 
 .device-card {
   padding: 1.8rem 1.3rem;
-  text-align: center;
+  text-align: left;
   transform-style: preserve-3d;
   transition: transform var(--t) var(--ease), box-shadow var(--t) var(--ease),
               border-color var(--t-fast);
@@ -1582,8 +1643,8 @@ html { scrollbar-color: var(--red) #f0f0f0; scrollbar-width: thin; }
   display: grid;
   place-items: center;
   width: 60px; height: 60px;
-  margin: 0 auto 1rem;
-  border-radius: 18px;
+  margin: 0 0 1rem;
+  border-radius: var(--radius-lg);
   border: 1px solid var(--glass-brd);
   transition: transform var(--t) var(--ease-bounce), box-shadow var(--t);
   animation: floatSoft 6s ease-in-out infinite;
@@ -1608,7 +1669,7 @@ html { scrollbar-color: var(--red) #f0f0f0; scrollbar-width: thin; }
 .faq-list { display: grid; gap: 0.85rem; }
 
 .faq-item {
-  border-radius: 16px;
+  border-radius: var(--radius-lg);
   overflow: hidden;
   transition: border-color var(--t-fast), box-shadow var(--t) var(--ease);
 }
@@ -1639,7 +1700,7 @@ html { scrollbar-color: var(--red) #f0f0f0; scrollbar-width: thin; }
   position: relative;
   flex-shrink: 0;
   width: 26px; height: 26px;
-  border-radius: 8px;
+  border-radius: var(--radius-sm);
   border: 1px solid var(--glass-brd);
   transition: transform var(--t) var(--ease-bounce), border-color var(--t-fast),
               background var(--t-fast);
@@ -1728,7 +1789,7 @@ html { scrollbar-color: var(--red) #f0f0f0; scrollbar-width: thin; }
   place-items: center;
   min-height: 56px;
   padding: 0 1.8rem;
-  border-radius: 16px;
+  border-radius: var(--radius-lg);
   border: 1px solid var(--glass-brd);
   background: var(--glass-bg);
   backdrop-filter: blur(10px);
@@ -1839,7 +1900,7 @@ html { scrollbar-color: var(--red) #f0f0f0; scrollbar-width: thin; }
   gap: 0.75rem;
   max-width: min(92vw, 360px);
   padding: 0.85rem 1.1rem;
-  border-radius: 14px;
+  border-radius: var(--radius);
   border: 1px solid var(--glass-brd);
   background: rgba(255, 255, 255, 0.97);
   backdrop-filter: blur(16px) saturate(140%);
@@ -1860,7 +1921,7 @@ html { scrollbar-color: var(--red) #f0f0f0; scrollbar-width: thin; }
   place-items: center;
   flex-shrink: 0;
   width: 28px; height: 28px;
-  border-radius: 9px;
+  border-radius: var(--radius-sm);
 }
 .toast-icon svg { width: 16px; height: 16px; }
 
@@ -1900,7 +1961,7 @@ html { scrollbar-color: var(--red) #f0f0f0; scrollbar-width: thin; }
   display: grid;
   place-items: center;
   width: 46px; height: 46px;
-  border-radius: 14px;
+  border-radius: var(--radius);
   border: 1px solid var(--glass-brd);
   background: rgba(255, 255, 255, 0.92);
   backdrop-filter: blur(12px);
@@ -1934,7 +1995,10 @@ html { scrollbar-color: var(--red) #f0f0f0; scrollbar-width: thin; }
 .reveal[data-reveal="zoom"] { transform: scale(0.9) translateY(24px); }
 .reveal[data-reveal="left"] { transform: translateX(-40px); }
 .reveal[data-reveal="right"]{ transform: translateX(40px); }
-.reveal.shown { opacity: 1; transform: none; }
+/* translateY(var(--lift)) rather than `none`, so a hover lift has somewhere to
+   live. --lift defaults to 0, which is identical to `none` in effect. A card
+   can't just add its own `transform` on :hover — this rule would beat it. */
+.reveal.shown { opacity: 1; transform: translateY(var(--lift, 0px)); }
 
 /* ---- 3D tilt (JS writes the custom props) ---- */
 .tilt {
@@ -1953,9 +2017,51 @@ html { scrollbar-color: var(--red) #f0f0f0; scrollbar-width: thin; }
 .reveal[data-reveal="zoom"]:not(.shown).tilt { transform: scale(0.9) translateY(24px); }
 .reveal.shown.tilt {
   transform: perspective(1000px)
+             translateY(var(--lift, 0px))
              rotateX(var(--rx, 0deg))
              rotateY(var(--ry, 0deg))
              translateZ(0);
+}
+
+/* ==========================================================================
+   RAIL CARD HOVER
+
+   These sit after .reveal / .tilt on purpose. Both of those own `transform`
+   at (0,1,0) and (0,3,0), so a card that simply declared `transform` on
+   :hover would either lose outright or wipe out the 3D rotation. The lift
+   travels as --lift instead, which both transforms already compose in.
+
+   The transition is restated here for the same reason: .reveal sets 0.75s on
+   transform, which is right for a once-only entrance and treacle for a hover.
+   Same specificity, later in the file, so this wins.
+   ========================================================================== */
+
+.step-card,
+.platform-card,
+.feature-card,
+.device-card {
+  transition: opacity 0.75s var(--ease),
+              transform 0.32s var(--ease),
+              box-shadow 0.32s var(--ease),
+              border-color var(--t-fast);
+}
+
+.step-card:hover,
+.platform-card:hover,
+.feature-card:hover,
+.device-card:hover {
+  --lift: -8px;
+  box-shadow: var(--sh-lg), 0 0 0 1px var(--red-soft);
+}
+
+/* The rail is scroll-snapped, so a card is usually parked dead-centre under
+   the thumb on a phone. There's no hover there — :active gives touch the same
+   acknowledgement, just tighter. */
+@media (hover: none) {
+  .step-card:active,
+  .platform-card:active,
+  .feature-card:active,
+  .device-card:active { --lift: -3px; }
 }
 
 /* ==========================================================================
@@ -2001,7 +2107,7 @@ html { scrollbar-color: var(--red) #f0f0f0; scrollbar-width: thin; }
     display: block;
     padding: 0.85rem 0.6rem;
     font-size: 1rem;
-    border-radius: 12px;
+    border-radius: var(--radius);
   }
   .nav-link::after { display: none; }
   .nav-link:hover, .nav-link.active { background: rgba(0, 0, 0, 0.04); transform: none; }
@@ -2009,10 +2115,11 @@ html { scrollbar-color: var(--red) #f0f0f0; scrollbar-width: thin; }
 
 /* Phones */
 @media (max-width: 640px) {
-  /* --radius was 18px here — a leftover from when the desktop radius was 22px
-     and phones wanted something softer. The theme's radius is 6px now, so 18px
-     made corners three times rounder on a phone than on a laptop. */
-  :root { --radius: 6px; --nav-h: 66px; }
+  /* No --radius override: the scale is the same on every screen. This line has
+     already been wrong twice — 18px when the theme moved to 6px, then 6px when
+     it moved to 10px. A breakpoint that restates a token drifts every time the
+     token changes, so it only sets what's genuinely size-dependent. */
+  :root { --nav-h: 66px; }
 
   .hero { min-height: auto; padding-top: 2rem; }
   .hero-title { flex-direction: column; gap: 0.2rem; }

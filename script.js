@@ -1,5 +1,5 @@
 /* ==========================================================================
-   VIDEO-HUB — script.js
+   VID VORTEX — script.js
    Vanilla JS. No frameworks, no dependencies.
 
    Modules
@@ -273,14 +273,13 @@
   }
 
   /* ========================================================================
-     05. NAVBAR — sticky state, active link, mobile menu, progress
+     05. NAVBAR — sticky state, active link, mobile menu
      ======================================================================== */
 
   function initNavbar() {
     const navbar = $("#navbar");
     const toggle = $("#navToggle");
     const menu = $("#navMenu");
-    const progress = $("#navProgress");
     const toTop = $("#toTop");
     const links = $$(".nav-link");
 
@@ -311,12 +310,6 @@
 
       if (navbar) navbar.classList.toggle("scrolled", y > 12);
       if (toTop) toTop.classList.toggle("show", y > 600);
-
-      // Reading progress
-      if (progress) {
-        const max = document.documentElement.scrollHeight - window.innerHeight;
-        progress.style.width = (max > 0 ? (y / max) * 100 : 0) + "%";
-      }
 
       // Active section — the one occupying the upper third of the viewport.
       const line = y + window.innerHeight * 0.32;
@@ -840,7 +833,21 @@
           io.unobserve(el); // reveal once, then stop watching
         });
       },
-      { threshold: 0.12, rootMargin: "0px 0px -8% 0px" }
+      /* The wide left/right margin is for the card rails.
+
+         This observer was written for a vertical grid, where everything is
+         inside the viewport horizontally and only height decides visibility.
+         The rails changed that: their cards sit up to ~2000px off to the
+         right, so they never intersect and stay at opacity 0 until swiped to
+         — meaning you'd swipe into a blank card that then faded up 240ms
+         later, entrance animation and all. Widening the root horizontally
+         lets a whole rail reveal together when the section scrolls into view,
+         so swiping reveals cards that are already there.
+
+         Vertical stays tight (-8%), which is what actually gates the reveal.
+         Nothing else on the page lives off to the side, so this is a no-op
+         everywhere except the rails. */
+      { threshold: 0.12, rootMargin: "0px 2500px -8% 0px" }
     );
 
     els.forEach((el) => io.observe(el));
