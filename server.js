@@ -224,7 +224,9 @@ app.get("/api/info", rateLimit, async (req, res) => {
   const platform = classify(url);
 
   if (!platform) {
-    return res.status(400).json({ error: "Unsupported link. Use TikTok, Instagram or Facebook." });
+    return res.status(400).json({
+  error: "Unsupported link. Use TikTok, Instagram, Facebook or YouTube."
+});
   }
 
   try {
